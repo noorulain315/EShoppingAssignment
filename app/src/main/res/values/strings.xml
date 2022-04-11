@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">e Shopping</string>
-    <string name="items_left_msg">Items are yet to collect</string>
+    <string name="items_left_msg">%1$s Items are yet to collect</string>
+    <string name="item_delete_msg">%1$s product is deleted successfully</string>
     <string name="add_product">Add product</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="add">Add</string>
 </resources>

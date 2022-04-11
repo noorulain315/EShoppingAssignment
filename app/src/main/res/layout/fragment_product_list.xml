@@ -6,6 +6,7 @@
 
     <TextView
         android:id="@+id/checkedCountTextView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/teal_900"
@@ -26,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/checkedCountTextView" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addProductButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_product"

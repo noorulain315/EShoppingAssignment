@@ -1,6 +1,7 @@
 package com.example.eshoppingassignment.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.eshoppingassignment.R
 import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.Product
 import com.example.eshoppingassignment.data.models.ProductResponse
@@ -22,7 +24,6 @@ class ProductsListFragment : Fragment() {
 
     private lateinit var binding: FragmentProductListBinding
     private val viewModel: ProductViewModel by viewModels()
-    private val adapter = ProductAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,9 +36,8 @@ class ProductsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView()
         listenDataUpdates()
-        viewModel.deleteProduct(6)
+        setListeners()
         viewModel.addProduct(AddProductRequest("electronic", "hgasgh", "jhgaf", 20.0, "jhfas"))
     }
 
@@ -46,7 +46,27 @@ class ProductsListFragment : Fragment() {
         viewModel.getProducts()
     }
 
-    private fun setUpRecyclerView() {
+    private fun setListeners() {
+        binding.addProductButton.setOnClickListener {
+            showAddProduct()
+            Log.d("add product", "clicked")
+        }
+    }
+
+    private fun showAddProduct() {
+        val dialog = AddProductDialogFragment.create()
+        dialog.show(parentFragmentManager, "AddProductDialogFragment")
+    }
+
+    private fun setUpRecyclerView(data: MutableList<Product>) {
+        val adapter = ProductAdapter(data, {
+            binding.checkedCountTextView.text = getString(R.string.items_left_msg, it.toString())
+        }, {
+            viewModel.deleteProduct(data[it].id)
+            val checkedCount = data.filter { product -> !product.isChecked }.size.toString()
+            binding.checkedCountTextView.text =
+                getString(R.string.items_left_msg, checkedCount)
+        })
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.recyclerView.adapter = adapter
     }
@@ -55,24 +75,53 @@ class ProductsListFragment : Fragment() {
         viewModel.getProductResponseLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.ResourceSuccess -> {
-                    adapter.setData(getProductsList(it.data))
+                    handleSuccessProductResponse(it.data)
                 }
                 is Resource.ResourceError -> {
+                    binding.recyclerView.visibility = View.GONE
+                    binding.checkedCountTextView.visibility = View.GONE
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
-                is Resource.ResourceLoading -> {}
+                is Resource.ResourceLoading -> {
+                    binding.recyclerView.visibility = View.GONE
+                    binding.checkedCountTextView.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.getProductDeleteLiveData().observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.ResourceSuccess -> {
+                    binding.checkedCountTextView.visibility = View.VISIBLE
+                    val msg = getString(R.string.item_delete_msg, it.data.title)
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                }
+                is Resource.ResourceError -> {
+                    binding.checkedCountTextView.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+                is Resource.ResourceLoading -> {
+                    binding.checkedCountTextView.visibility = View.GONE
+                }
             }
         }
     }
 
-    private fun getProductsList(productResponse: ProductResponse): List<Product> {
+    private fun handleSuccessProductResponse(productResponse: ProductResponse) {
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.checkedCountTextView.text =
+            getString(R.string.items_left_msg, productResponse.size.toString())
+        binding.checkedCountTextView.visibility = View.VISIBLE
+        setUpRecyclerView(getProductsList(productResponse))
+    }
+
+    private fun getProductsList(productResponse: ProductResponse): MutableList<Product> {
         val list = mutableListOf<Product>()
         list.addAll(productResponse.map {
             Product(it.id, it.image, it.title)
         })
         return list
     }
-
 
     companion object {
         fun create() = ProductsListFragment()

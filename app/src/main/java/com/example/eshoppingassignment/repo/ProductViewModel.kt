@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.ProductResponse
+import com.example.eshoppingassignment.data.models.ProductResponseItem
 import com.example.eshoppingassignment.util.DispatcherProvider
 import com.example.eshoppingassignment.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,10 @@ class ProductViewModel @Inject constructor(
     fun getProductResponseLiveData(): LiveData<Resource<ProductResponse>> =
         productResponseLiveData
 
+    private var productDeleteLiveData = MutableLiveData<Resource<ProductResponseItem>>()
+    fun getProductDeleteLiveData(): LiveData<Resource<ProductResponseItem>> =
+        productDeleteLiveData
+
     fun getProducts() {
         viewModelScope.launch(dispatchers.io) {
             productResponseLiveData.postValue(Resource.ResourceLoading())
@@ -32,14 +37,8 @@ class ProductViewModel @Inject constructor(
 
     fun deleteProduct(productId: Int) {
         viewModelScope.launch(dispatchers.io) {
-            when (val response = productRepo.deleteProducts(productId)) {
-                is Resource.ResourceSuccess -> {
-                    Log.d("delete success response", response.toString())
-                }
-                is Resource.ResourceError -> {
-                    Log.d("delete error response", response.error.localizedMessage)
-                }
-            }
+            productDeleteLiveData.postValue(Resource.ResourceLoading())
+            productDeleteLiveData.postValue(productRepo.deleteProducts(productId))
         }
     }
 

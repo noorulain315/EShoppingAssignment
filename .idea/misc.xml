@@ -3,11 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/compose-model-1649681464501.xml" value="0.11" />
         <entry key="app/src/main/res/drawable/ic_add_product.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/ic_check_product.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_delete_product.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24010416666666667" />
-        <entry key="app/src/main/res/layout/fragment_product_list.xml" value="0.22291666666666668" />
+        <entry key="app/src/main/res/layout/fragment_product_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_product.xml" value="0.11702127659574468" />
         <entry key="app/src/main/res/layout/list_row_product.xml" value="0.165" />
       </map>
