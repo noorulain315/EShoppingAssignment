@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">EShoppingAssignment</string>
+    <string name="app_name">e Shopping</string>
+    <string name="items_left_msg">Items are yet to collect</string>
+    <string name="add_product">Add product</string>
 </resources>

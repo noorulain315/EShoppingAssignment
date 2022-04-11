@@ -5,7 +5,6 @@ import com.example.eshoppingassignment.data.models.AddProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponseItem
 import com.example.eshoppingassignment.util.Resource
-import retrofit2.Response
 
 interface ProductRepo {
     suspend fun getProducts(): Resource<ProductResponse>

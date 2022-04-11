@@ -1,9 +1,12 @@
 package com.example.eshoppingassignment.repo
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eshoppingassignment.data.models.AddProductRequest
+import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.util.DispatcherProvider
 import com.example.eshoppingassignment.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,16 +19,14 @@ class ProductViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
+    private var productResponseLiveData = MutableLiveData<Resource<ProductResponse>>()
+    fun getProductResponseLiveData(): LiveData<Resource<ProductResponse>> =
+        productResponseLiveData
+
     fun getProducts() {
         viewModelScope.launch(dispatchers.io) {
-            when (val response = productRepo.getProducts()) {
-                is Resource.ResourceSuccess -> {
-                    Log.d("success response", response.toString())
-                }
-                is Resource.ResourceError -> {
-                    Log.d("error response", response.error.localizedMessage)
-                }
-            }
+            productResponseLiveData.postValue(Resource.ResourceLoading())
+            productResponseLiveData.postValue(productRepo.getProducts())
         }
     }
 
