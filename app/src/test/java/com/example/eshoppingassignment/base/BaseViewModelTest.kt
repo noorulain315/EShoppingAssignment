@@ -8,7 +8,6 @@ import org.junit.Rule
 
 @ExperimentalCoroutinesApi
 open class BaseViewModelTest : BaseTest() {
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
 }

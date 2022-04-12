@@ -16,7 +16,6 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(
     private val productRepo: ProductRepo
 ) : ViewModel() {
-
     private var productResponseLiveData = MutableLiveData<Resource<ProductResponse>>()
     fun getProductResponseLiveData(): LiveData<Resource<ProductResponse>> =
         productResponseLiveData

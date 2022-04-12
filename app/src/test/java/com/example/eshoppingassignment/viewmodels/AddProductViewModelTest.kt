@@ -14,13 +14,11 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddProductViewModelTest : BaseViewModelTest() {
-
     @InjectMockKs
     lateinit var viewModel: AddProductViewModel
 
     @MockK
     lateinit var productRepo: ProductRepo
-
 
     private val liveAddProductResponse = mutableListOf<Resource<AddProductResponse>>()
 

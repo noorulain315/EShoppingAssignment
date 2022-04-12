@@ -17,7 +17,6 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ProductViewModelTest : BaseViewModelTest() {
-
     @InjectMockKs
     lateinit var viewModel: ProductViewModel
 

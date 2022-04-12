@@ -17,7 +17,6 @@ class ProductRepoImp @Inject constructor(
     private val productGateway: ProductGateway,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ProductRepo {
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     suspend fun <T> performApiCall(api: suspend () -> Response<T>): Resource<T> {
         return withContext(dispatcher) {

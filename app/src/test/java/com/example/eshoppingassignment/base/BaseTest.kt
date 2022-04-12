@@ -12,7 +12,6 @@ import org.junit.Before
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 open class BaseTest {
-
     private val testScheduler = TestCoroutineScheduler()
     val mainTestThread = UnconfinedTestDispatcher(testScheduler)
 
