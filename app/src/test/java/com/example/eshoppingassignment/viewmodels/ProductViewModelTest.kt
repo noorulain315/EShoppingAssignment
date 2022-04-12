@@ -5,7 +5,7 @@ import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponseItem
 import com.example.eshoppingassignment.data.models.Rating
 import com.example.eshoppingassignment.repo.ProductRepo
-import com.example.eshoppingassignment.repo.ProductViewModel
+import com.example.eshoppingassignment.ui.viewmodel.ProductViewModel
 import com.example.eshoppingassignment.util.Resource
 import io.mockk.coEvery
 import io.mockk.impl.annotations.InjectMockKs

@@ -12,7 +12,7 @@ import com.example.eshoppingassignment.R
 import com.example.eshoppingassignment.data.models.Product
 import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.databinding.FragmentProductListBinding
-import com.example.eshoppingassignment.repo.ProductViewModel
+import com.example.eshoppingassignment.ui.viewmodel.ProductViewModel
 import com.example.eshoppingassignment.ui.adapter.ProductAdapter
 import com.example.eshoppingassignment.util.Resource
 import com.example.eshoppingassignment.util.hide

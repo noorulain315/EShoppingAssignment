@@ -20,7 +20,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.example.eshoppingassignment.R
 import com.example.eshoppingassignment.data.models.AddProductRequest
-import com.example.eshoppingassignment.repo.AddProductViewModel
+import com.example.eshoppingassignment.ui.viewmodel.AddProductViewModel
 import com.example.eshoppingassignment.util.*
 import dagger.hilt.android.AndroidEntryPoint
 

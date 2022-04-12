@@ -1,4 +1,4 @@
-package com.example.eshoppingassignment.repo
+package com.example.eshoppingassignment.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.AddProductResponse
+import com.example.eshoppingassignment.repo.ProductRepo
 import com.example.eshoppingassignment.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

@@ -2,7 +2,7 @@ package com.example.eshoppingassignment.viewmodels
 
 import com.example.eshoppingassignment.base.BaseViewModelTest
 import com.example.eshoppingassignment.data.models.*
-import com.example.eshoppingassignment.repo.AddProductViewModel
+import com.example.eshoppingassignment.ui.viewmodel.AddProductViewModel
 import com.example.eshoppingassignment.repo.ProductRepo
 import com.example.eshoppingassignment.util.Resource
 import io.mockk.coEvery
