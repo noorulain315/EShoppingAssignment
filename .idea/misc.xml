@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/ic_add_product.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/ic_check_product.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_delete_product.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/fragment_product_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_product.xml" value="0.11702127659574468" />

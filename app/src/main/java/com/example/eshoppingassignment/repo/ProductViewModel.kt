@@ -5,10 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponseItem
-import com.example.eshoppingassignment.util.DispatcherProvider
 import com.example.eshoppingassignment.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
-    private val productRepo: ProductRepo,
-    private val dispatchers: DispatcherProvider
+    private val productRepo: ProductRepo
 ) : ViewModel() {
 
     private var productResponseLiveData = MutableLiveData<Resource<ProductResponse>>()
@@ -29,29 +26,16 @@ class ProductViewModel @Inject constructor(
         productDeleteLiveData
 
     fun getProducts() {
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch {
             productResponseLiveData.postValue(Resource.ResourceLoading())
             productResponseLiveData.postValue(productRepo.getProducts())
         }
     }
 
     fun deleteProduct(productId: Int) {
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch {
             productDeleteLiveData.postValue(Resource.ResourceLoading())
             productDeleteLiveData.postValue(productRepo.deleteProducts(productId))
-        }
-    }
-
-    fun addProduct(productRequest: AddProductRequest) {
-        viewModelScope.launch(dispatchers.io) {
-            when (val response = productRepo.addProducts(productRequest)) {
-                is Resource.ResourceSuccess -> {
-                    Log.d("add success response", response.toString())
-                }
-                is Resource.ResourceError -> {
-                    Log.d("add error response", response.error.localizedMessage)
-                }
-            }
         }
     }
 

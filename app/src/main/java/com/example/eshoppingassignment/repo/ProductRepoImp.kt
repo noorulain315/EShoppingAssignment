@@ -1,28 +1,37 @@
 package com.example.eshoppingassignment.repo
 
+import androidx.annotation.VisibleForTesting
 import com.example.eshoppingassignment.data.apigateway.ProductGateway
 import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.AddProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.data.models.ProductResponseItem
 import com.example.eshoppingassignment.util.Resource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import javax.inject.Inject
 
 class ProductRepoImp @Inject constructor(
-    private val productGateway: ProductGateway
+    private val productGateway: ProductGateway,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ProductRepo {
-    private suspend fun <T> performApiCall(api: suspend () -> Response<T>): Resource<T> {
-        return try {
-            val response = api()
-            val result = response.body()
-            if (response.isSuccessful && result != null) {
-                Resource.ResourceSuccess(result)
-            } else {
-                Resource.ResourceError(Exception(response.message()))
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    suspend fun <T> performApiCall(api: suspend () -> Response<T>): Resource<T> {
+        return withContext(dispatcher) {
+            try {
+                val response = api()
+                val result = response.body()
+                if (response.isSuccessful && result != null) {
+                    Resource.ResourceSuccess(result)
+                } else {
+                    Resource.ResourceError(Exception(response.message()))
+                }
+            } catch (e: Exception) {
+                Resource.ResourceError(Exception("An error occurred"))
             }
-        } catch (e: Exception) {
-            Resource.ResourceError(Exception("An error occurred"))
         }
     }
 

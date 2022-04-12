@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,16 +20,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.example.eshoppingassignment.R
 import com.example.eshoppingassignment.data.models.AddProductRequest
-import com.example.eshoppingassignment.repo.ProductViewModel
-import com.example.eshoppingassignment.util.black
-import com.example.eshoppingassignment.util.teal700
-import com.example.eshoppingassignment.util.teal900
-import com.example.eshoppingassignment.util.white
+import com.example.eshoppingassignment.repo.AddProductViewModel
+import com.example.eshoppingassignment.util.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddProductDialogFragment : DialogFragment() {
-    private val viewModel: ProductViewModel by viewModels()
+    private val viewModel: AddProductViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,6 +42,7 @@ class AddProductDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listenDataUpdates()
     }
 
     @Composable
@@ -50,6 +50,7 @@ class AddProductDialogFragment : DialogFragment() {
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
+        var isEmpty by remember { mutableStateOf(false) }
 
         Column(
             Modifier
@@ -96,20 +97,51 @@ class AddProductDialogFragment : DialogFragment() {
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 onClick = {
-                    viewModel.addProduct(AddProductRequest("", description, "", 0.0, title))
-                    title = ""
-                    description = ""
-                    focusRequester.requestFocus()
+                    if (title.isEmpty() || description.isEmpty()) {
+                        isEmpty = true
+                    } else {
+                        isEmpty = false
+                        viewModel.addProduct(AddProductRequest("", description, "", 0.0, title))
+                        title = ""
+                        description = ""
+                        focusRequester.requestFocus()
+                    }
                 }, colors = ButtonDefaults.textButtonColors(
                     backgroundColor = teal900
                 )
             ) {
                 Text(stringResource(R.string.add), color = white)
             }
+
+            if (isEmpty) {
+                Text(
+                    text = stringResource(R.string.fields_empty_msg),
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
         }
     }
 
     companion object {
         fun create(): DialogFragment = AddProductDialogFragment()
+    }
+
+    private fun listenDataUpdates() {
+        viewModel.getAddProductLiveDataLiveData().observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.ResourceSuccess -> {
+                    val msg = getString(R.string.item_add_msg, it.data.id.toString())
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                }
+                is Resource.ResourceError -> {
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+                is Resource.ResourceLoading -> {
+                }
+            }
+        }
+
     }
 }

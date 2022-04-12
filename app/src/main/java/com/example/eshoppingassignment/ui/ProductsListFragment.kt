@@ -10,13 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.eshoppingassignment.R
-import com.example.eshoppingassignment.data.models.AddProductRequest
 import com.example.eshoppingassignment.data.models.Product
 import com.example.eshoppingassignment.data.models.ProductResponse
 import com.example.eshoppingassignment.databinding.FragmentProductListBinding
 import com.example.eshoppingassignment.repo.ProductViewModel
 import com.example.eshoppingassignment.ui.adapter.ProductAdapter
 import com.example.eshoppingassignment.util.Resource
+import com.example.eshoppingassignment.util.hide
+import com.example.eshoppingassignment.util.show
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,18 +39,20 @@ class ProductsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         listenDataUpdates()
         setListeners()
-        viewModel.addProduct(AddProductRequest("electronic", "hgasgh", "jhgaf", 20.0, "jhfas"))
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.getProducts()
+      //  viewModel.getProducts()
+        viewModel.deleteProduct(1)
     }
 
     private fun setListeners() {
         binding.addProductButton.setOnClickListener {
             showAddProduct()
-            Log.d("add product", "clicked")
+        }
+        binding.retryTextView.setOnClickListener {
+            viewModel.getProducts()
         }
     }
 
@@ -78,13 +81,17 @@ class ProductsListFragment : Fragment() {
                     handleSuccessProductResponse(it.data)
                 }
                 is Resource.ResourceError -> {
-                    binding.recyclerView.visibility = View.GONE
-                    binding.checkedCountTextView.visibility = View.GONE
+                    binding.retryTextView.show()
+                    binding.recyclerView.hide()
+                    binding.checkedCountTextView.hide()
+                    binding.progressBar.hide()
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
                 is Resource.ResourceLoading -> {
-                    binding.recyclerView.visibility = View.GONE
-                    binding.checkedCountTextView.visibility = View.GONE
+                    binding.retryTextView.hide()
+                    binding.recyclerView.hide()
+                    binding.checkedCountTextView.hide()
+                    binding.progressBar.show()
                 }
             }
         }
@@ -92,26 +99,30 @@ class ProductsListFragment : Fragment() {
         viewModel.getProductDeleteLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.ResourceSuccess -> {
-                    binding.checkedCountTextView.visibility = View.VISIBLE
+                    binding.checkedCountTextView.show()
                     val msg = getString(R.string.item_delete_msg, it.data.title)
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                    Log.d("delete", it.data.toString())
                 }
                 is Resource.ResourceError -> {
-                    binding.checkedCountTextView.visibility = View.VISIBLE
+                    binding.checkedCountTextView.show()
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                    Log.d("delete error", it.toString())
                 }
                 is Resource.ResourceLoading -> {
-                    binding.checkedCountTextView.visibility = View.GONE
+                    binding.checkedCountTextView.hide()
                 }
             }
         }
     }
 
     private fun handleSuccessProductResponse(productResponse: ProductResponse) {
-        binding.recyclerView.visibility = View.VISIBLE
+        binding.retryTextView.hide()
+        binding.progressBar.hide()
+        binding.recyclerView.show()
         binding.checkedCountTextView.text =
             getString(R.string.items_left_msg, productResponse.size.toString())
-        binding.checkedCountTextView.visibility = View.VISIBLE
+        binding.checkedCountTextView.show()
         setUpRecyclerView(getProductsList(productResponse))
     }
 
